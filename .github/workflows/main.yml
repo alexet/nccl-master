@@ -71,24 +71,8 @@ jobs:
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
 
-          # Before uploading the database as an artifact,
-      # clean up its temporary data to reduce the artifact size,
-      # and zip it so the artifact is a single file.
-      # This reduces the load on the Actions artifact file database.
-    -   name: Clean up CodeQL database before upload
-        id: database-cleanup
-        env:
-          LANGUAGE: ${{ matrix.language }}
-          CODEQL_PATH: ${{ steps.init.outputs.codeql-path }}
-        run: |
-          set -xu
-          DATABASE_DIR="${{ runner.temp }}/codeql_dbs/$LANGUAGE"
-          DATABASE_ZIP="${{ runner.temp }}/semmle-code-$LANGUAGE-db.zip"
-          echo "Cleaning up and compressing database in $DATABASE_DIR"
-          "$CODEQL_PATH" database bundle --mode brutal --output "$DATABASE_ZIP" "$DATABASE_DIR"
-          echo "::set-output name=zip::$DATABASE_ZIP"
-    -   name: Upload CodeQL database
-        uses: actions/upload-artifact@v2
-        with:
-          name: semmle-code-${{ matrix.language }}-db
-          path: ${{ steps.database-cleanup.outputs.zip }}
+    - name: Upload CodeQL database
+      uses: actions/upload-artifact@v2
+      with:
+        name: semmle-code-${{ matrix.language }}-db
+        path: "${{ runner.temp }}/codeql_dbs/${{ matrix.language }}/*"
