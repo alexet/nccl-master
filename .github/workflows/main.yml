@@ -75,4 +75,4 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: semmle-code-${{ matrix.language }}-db
-        path: "${{ runner.temp }}/codeql_dbs/${{ matrix.language }}/*"
+        path: "${{ runner.temp }}/codeql_databases/${{ matrix.language }}/*"
